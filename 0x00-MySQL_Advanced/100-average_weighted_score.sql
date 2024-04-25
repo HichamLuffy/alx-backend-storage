@@ -1,4 +1,4 @@
---- 100-average_weighted_score.sql
+-- 100-average_weighted_score.sql
 DELIMITER //
 CREATE PROCEDURE ComputeAverageWeightedScoreForUser(IN user_id INT)
 BEGIN
