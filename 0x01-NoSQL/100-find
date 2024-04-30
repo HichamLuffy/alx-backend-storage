@@ -1,1 +1,2 @@
-#!/usr/bin/env bash
+//Regex filter
+db.school.find({ name: { $regex: '^Holberton*' } })
