@@ -1,1 +1,2 @@
-#!/usr/bin/env bash
+// All documents
+db.school.find().pretty()
