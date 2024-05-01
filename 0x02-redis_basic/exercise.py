@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""exercise"""
+"""doc doc module"""
 
 import redis
 import uuid
@@ -8,7 +8,7 @@ from typing import Callable, Optional, Union
 
 
 def count_calls(method: Callable) -> Callable:
-    """count calls"""
+    """doc doc count calls"""
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         self._redis.incr(method.__qualname__)
@@ -17,7 +17,7 @@ def count_calls(method: Callable) -> Callable:
 
 
 def call_history(method: Callable) -> Callable:
-    """call history"""
+    """doc doc call history"""
     @wraps(method)
     def wrapper(self, *args, **kwargs):
         input_key = f"{method.__qualname__}:inputs"
@@ -30,7 +30,7 @@ def call_history(method: Callable) -> Callable:
 
 
 def replay(method: Callable) -> None:
-    """doc replay"""
+    """doc doc replay"""
     input_key = "{}:inputs".format(method.__qualname__)
     output_key = "{}:outputs".format(method.__qualname__)
 
@@ -47,33 +47,33 @@ def replay(method: Callable) -> None:
 
 
 class Cache:
-    """doc class cache"""
+    """doc doc class cache"""
 
     def __init__(self):
-        """init"""
+        """doc doc init"""
         self._redis = redis.Redis()
         self._redis.flushdb()
 
     @count_calls
     @call_history
     def store(self, data: Union[str, bytes, int, float]) -> str:
-        """store"""
+        """doc doc store"""
         random_key = str(uuid.uuid4())
         self._redis.set(random_key, data)
         return random_key
 
     def get(self, key: str, fn: Optional[Callable]
             = None) -> Union[str, bytes, int, float]:
-        """get"""
+        """doc doc get"""
         value = self._redis.get(key)
         if value is not None and fn is not None:
             value = fn(value)
         return value
 
     def get_str(self, key: str) -> str:
-        """get str"""
+        """doc doc get str"""
         return self.get(key, fn=lambda x: x.decode('utf-8'))
 
     def get_int(self, key: str) -> int:
-        """get int"""
+        """doc doc get int"""
         return self.get(key, fn=int)
