@@ -6,7 +6,6 @@ import redis
 from functools import wraps
 
 
-# Assuming that a Redis client instance is available
 # For example, the Redis server is running on localhost:6379
 redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
@@ -35,11 +34,3 @@ def get_page(url: str) -> str:
     response = requests.get(url)
     redis_client.setex(cache_key, 10, response.text)
     return response.text
-
-
-# Example usage:
-if __name__ == "__main__":
-    """doc doc test"""
-    url = 'http://slowwly.robertomurray.co.uk'
-    content = get_page(url)
-    print(content)  # This should print the fetched HTML content
