@@ -34,3 +34,11 @@ def get_page(url: str) -> str:
     response = requests.get(url)
     redis_client.setex(cache_key, 10, response.text)
     return response.text
+
+
+# Example usage:
+if __name__ == "__main__":
+    """doc doc test"""
+    url = 'http://slowwly.robertomurray.co.uk'
+    content = get_page(url)
+    print(content)  # This should print the fetched HTML content
