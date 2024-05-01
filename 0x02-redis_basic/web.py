@@ -1,23 +1,44 @@
 #!/usr/bin/python3
+"""doc doc module"""
+
 import requests
 import redis
+from functools import wraps
 
-# Assuming the creation of a Redis connection as redis_conn
-redis_conn = redis.Redis()
 
+# Assuming that a Redis client instance is available
+# For example, the Redis server is running on localhost:6379
+redis_client = redis.Redis(host='localhost', port=6379, db=0)
+
+
+def count_url_accesses(func):
+    """Decorator that counts how many times a URL has been accessed."""
+    @wraps(func)
+    def wrapper(url):
+        # Increment the count each time a URL is accessed
+        count_key = f"count:{url}"
+        redis_client.incr(count_key)
+        return func(url)
+    return wrapper
+
+
+@count_url_accesses
 def get_page(url: str) -> str:
+    """Fetches the HTML content of a URL with caching and access counting."""
     cache_key = f"cache:{url}"
-    count_key = f"count:{url}"
-    
-    # Increment the access count
-    redis_conn.incr(count_key)
-    
-    # Try to get the cached content
-    cached_content = redis_conn.get(cache_key)
+    # Check if the cached version exists
+    cached_content = redis_client.get(cache_key)
     if cached_content:
         return cached_content.decode('utf-8')
-    
-    # Fetch the new content and cache it
+
+    # If not cached, fetch the content and cache it with a 10-second expiration
     response = requests.get(url)
-    redis_conn.setex(cache_key, 10, response.text)
+    redis_client.setex(cache_key, 10, response.text)
     return response.text
+
+
+# Example usage:
+if __name__ == "__main__":
+    url = 'http://slowwly.robertomurray.co.uk'
+    content = get_page(url)
+    print(content)  # This should print the fetched HTML content
