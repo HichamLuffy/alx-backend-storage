@@ -26,17 +26,21 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
-def replay(method: Callable):
-    qualified_name = method.__qualname__
-    inputs_key = f"{qualified_name}:inputs"
-    outputs_key = f"{qualified_name}:outputs"
-    
-    inputs = cache._redis.lrange(inputs_key, 0, -1)
-    outputs = cache._redis.lrange(outputs_key, 0, -1)
-    
-    print(f"{qualified_name} was called {len(inputs)} times:")
-    for input_val, output_val in zip(inputs, outputs):
-        print(f"{qualified_name}(*{input_val.decode('utf-8')}) -> {output_val.decode('utf-8')}")
+def replay(method: Callable) -> None:
+    """doc doc class"""
+    input_key = "{}:inputs".format(method.__qualname__)
+    output_key = "{}:outputs".format(method.__qualname__)
+
+    inputs = method.__self__._redis.lrange(input_key, 0, -1)
+    outputs = method.__self__._redis.lrange(output_key, 0, -1)
+
+    print("{} was called {} times:".format(method.__qualname__, len(inputs)))
+    for inp, out in zip(inputs, outputs):
+        print(
+            "{}(*{}) -> {}".format(
+                method.__qualname__, inp.decode("utf-8"), out.decode("utf-8")
+            )
+        )
 
 
 class Cache:
