@@ -12,7 +12,7 @@ redis_client = redis.Redis(host='localhost', port=6379, db=0)
 
 
 def count_url_accesses(func):
-    """Decorator that counts how many times a URL has been accessed."""
+    """doc doc Decorator that counts how many times a URL has been accessed."""
     @wraps(func)
     def wrapper(url):
         # Increment the count each time a URL is accessed
@@ -24,7 +24,7 @@ def count_url_accesses(func):
 
 @count_url_accesses
 def get_page(url: str) -> str:
-    """Fetches the HTML content of a URL with caching and access counting."""
+    """doc doc Fetches HTML content of URL with caching and access counting"""
     cache_key = f"cache:{url}"
     # Check if the cached version exists
     cached_content = redis_client.get(cache_key)
@@ -39,6 +39,7 @@ def get_page(url: str) -> str:
 
 # Example usage:
 if __name__ == "__main__":
+    """doc doc test"""
     url = 'http://slowwly.robertomurray.co.uk'
     content = get_page(url)
     print(content)  # This should print the fetched HTML content
