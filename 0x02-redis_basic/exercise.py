@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """exercise"""
+
 import redis
 import uuid
 from functools import wraps
